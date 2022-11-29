@@ -57,7 +57,7 @@ void	xml_nodelist_init(t_xml_nodelist *list)
 {
 	list->memory_size = 1;
 	list->size = 0;
-	list->list = (t_xml_nodelist *)malloc(sizeof(t_xml_nodelist) * list->memory_size);
+	list->list = (t_xml_node **)malloc(sizeof(t_xml_node *) * list->memory_size);
 }
 
 void	xml_nodelist_add(t_xml_nodelist *list, t_xml_node *node)
@@ -65,8 +65,8 @@ void	xml_nodelist_add(t_xml_nodelist *list, t_xml_node *node)
 	if (list->size >= list->memory_size)
 	{
 		list->memory_size *= 2;
-		list->list = (t_xml_node *)resize_memory(list->list, \
-		sizeof(t_xml_node) * list->memory_size);
+		list->list = (t_xml_node **)resize_memory(list->list, \
+		sizeof(t_xml_node *) * list->memory_size);
 	}
 	list->list[list->size++] = node;
 }

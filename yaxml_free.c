@@ -45,5 +45,9 @@ void	xml_node_free(t_xml_node *node)
 
 void	xml_doc_free(t_xml_doc *doc)
 {
+	if (doc->version)
+		free(doc->version);
+	if (doc->encoding)
+		free(doc->encoding);
 	xml_node_free(doc->head);
 }

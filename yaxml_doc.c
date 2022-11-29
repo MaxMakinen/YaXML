@@ -13,6 +13,25 @@
 
 #include "yaxml.h"
 
+static int	check_end(const char *str, const char *target)
+{
+	int	str_len;
+	int	target_len;
+	int	index;
+
+	index = 0;
+	str_len = ft_strlen(str);
+	target_len = ft_strlen(target);
+	if (str_len < target_len)
+		return (FALSE);
+	while (index < target_len)
+	{
+		if (str[str_len - target_len + index] != target[index])
+			return (FALSE);
+	}
+	return (TRUE);
+}
+
 static t_tag_type parse_attr(char *buf, int *index, char *lex, int *lexi, \
 t_xml_node *current_node)
 {
@@ -84,14 +103,15 @@ size_t get_size(const char *path)
 	int 	fd;
 	size_t	size;
 	size_t	temp;
+	char	buf[4096];
 
 	size = 0;
 	ft_openfd(path, &fd);
-	temp = read(fd, NULL, 4098);
+	temp = read(fd, buf, 4096);
 	while (temp > 0)
 	{
 		size += temp;
-		temp = read(fd, NULL, 4098);
+		temp = read(fd, buf, 4096);
 	}
 	ft_closefd(fd);
 	return (size);
@@ -201,8 +221,9 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 					t_xml_node *desc = xml_node_new(NULL);
 					parse_attr(buf, &index, lex, &lexi, desc);
 
-					doc->version = xml_node_attr_value(desc, "version");
-					doc->encoding = xml_node_attr_value(desc, "encoding");
+					doc->version = ft_strdup(xml_node_attr_value(desc, "version"));
+					doc->encoding = ft_strdup(xml_node_attr_value(desc, "encoding"));
+					xml_node_free(desc);
 					continue;
 				}
 			}

@@ -73,7 +73,7 @@ int		ft_tolower(int c);
 /*
 fd functions
 */
-int		ft_openfd(char *filename, int *fd);
+int		ft_openfd(const char *filename, int *fd);
 int		ft_closefd(int fd);
 /*
 math functions
