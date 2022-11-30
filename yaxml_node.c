@@ -61,7 +61,7 @@ char	*xml_node_attr_value(t_xml_node *node, char *key)
 	while (index < node->attributes.size)
 	{
 		attr = node->attributes.list[index];
-		if (!ft_strcmp(attr.key, key))
+		if (attr.key != 0 && !ft_strcmp(attr.key, key))
 			return (attr.value);
 		index++;
 	}

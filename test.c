@@ -7,28 +7,30 @@ void	print_node(t_xml_node *node, int depth)
 	int	ai = 0;
 	char	d[depth];
 
+	if (node != NULL)
+	{
+
 	while (d_index < depth)
 	{
 		d[d_index] = '\t';
 		d_index++;
 	}
 	d[depth] = '\0';
-//	printf("%sdepth : %d\n", d, depth);
-	printf("%sTAG = %s data = %s\n", d, node->tag, node->data);
-	if (node->attributes.size > 0)
-		printf("%sattributes:\n", d);
+	printf("%s", d);
+		printf("TAG = %s ", node->tag);
+		printf("DATA = %s ", node->data);
 	while (ai < node->attributes.size)
 	{
-		printf("%s   key = %s value = %s\n", d, node->attributes.list[ai].key, node->attributes.list[ai].value);
+		printf("%s   key = %s value = %s", d, node->attributes.list[ai].key, node->attributes.list[ai].value);
 		ai++;
 	}
-	printf("%schildren: %d\n", d, node->children.size);
+	printf("\n%schildren: %d\n", d, node->children.size);
 	while (index < node->children.size)
 	{
 		print_node(node->children.list[index], depth + 1);
 		index++;
 	}
-
+	}
 }
 
 int	main(void)
@@ -44,23 +46,8 @@ int	main(void)
 		printf("XML Document (version=%s, encoding=%s)\n\n", doc.version, doc.encoding);
 
 		main_node = xml_node_child(doc.head, 0);
-//		printf("head children = %d\n", doc.head->children.size);
-//		while (head < doc.head->children.size)
-//		{
-//			printf("	tag = %s data =%s\n", doc.head->children.list[head]->tag, doc.head->children.list[head]->data);
-//			attr = 0;
-//			while (attr < doc.head->children.list[head]->attributes.size)
-//			{
-//				printf("		attr: key = %s value = %s\n", doc.head->children.list[head]->attributes.list[attr].key, doc.head->children.list[head]->attributes.list[attr].key);
-//				attr++;
-//			}
-//			head++;
-//		}
-//		printf("head children = %d\n", doc.head->children.size);
-//		printf("tag = %s attr = %s\n\n", main_node->tag, main_node->attributes.list[0].value);
 		print_node(doc.head, 0);
-
-		return (0);
+		xml_doc_free(&doc);
 	}
-
+	return (0);
 }

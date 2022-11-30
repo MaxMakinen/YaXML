@@ -78,6 +78,8 @@ t_xml_node *current_node)
 			lex[*lexi] = '\0';
 			current_attr.value = ft_strdup(lex);
 			xml_attrlist_add(&current_node->attributes, &current_attr);
+		//	free(current_attr.key);
+		//	free(current_attr.value);
 			current_attr.key = NULL;
 			current_attr.value = NULL;
 			*lexi = 0;

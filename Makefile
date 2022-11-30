@@ -16,9 +16,9 @@ DEBFLAGS =	-Wall -Wextra  -Werror -g -c
 NAME =		yaxml.a
 SRC_PATH =	./
 INCLUDE =	./
-SRCS =		yaxml.c yaxml_free.c
+SRCS =		yaxml_doc.c yaxml_free.c yaxml_list.c yaxml_node.c
 OBJECTS =	$(SRCS:.c=.o)
-HEADER =	-I $(INCLUDE)
+HEADER =	-I $(INCLUDE) -I libft/
 
 all: $(NAME)
 
