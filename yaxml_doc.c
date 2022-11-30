@@ -41,6 +41,7 @@ t_xml_node *current_node)
 	while (buf[*index] != '>')
 	{
 		lex[(*lexi)++] = buf[(*index)++];
+
 		//tag name
 		if (buf[*index] == ' ' && !current_node->tag)
 		{
@@ -51,7 +52,7 @@ t_xml_node *current_node)
 			continue;
 		}
 
-		//usually ignmore spaces
+		//usually ignore spaces
 		if (lex[*lexi - 1] == ' ')
 			(*lexi)--;
 
@@ -68,7 +69,6 @@ t_xml_node *current_node)
 		{
 			if (!current_attr.key)
 			{
-				printf("value has no key\n");
 				return (TAG_START);
 			}
 			*lexi = 0;
@@ -78,8 +78,6 @@ t_xml_node *current_node)
 			lex[*lexi] = '\0';
 			current_attr.value = ft_strdup(lex);
 			xml_attrlist_add(&current_node->attributes, &current_attr);
-		//	free(current_attr.key);
-		//	free(current_attr.value);
 			current_attr.key = NULL;
 			current_attr.value = NULL;
 			*lexi = 0;
@@ -128,6 +126,7 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 	int			lexi;
 	int			index;
 	t_xml_node	*current_node;
+	t_xml_node	*desc;
 
 	lexi = 0;
 	index = 0;
@@ -152,6 +151,7 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 		if (buf[index] == '<')
 		{
 			lex[lexi] = '\0';
+
 			//data
 			if (lexi > 0)
 			{
@@ -160,7 +160,9 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 					ft_error("ERROR: Text outside document");
 					return (FALSE);
 				}
+				if (!current_node->data){
 				current_node->data = ft_strdup(lex);
+				}
 				lexi = 0;
 			}
 
@@ -189,10 +191,11 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 
 				current_node = current_node->parent;
 				index++;
+				lexi = 0;
 				continue;
 			}
 
-			// Special nodes
+			// Special nodes - COMMENTS NEED MORE WORK
 			if (buf[index + 1] == '!')
 			{
 				while (buf[index] != ' ' && buf[index] != '>')
@@ -201,7 +204,6 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 				 //comments - This while loop seems kinda stupid, make it better
 				 if (!ft_strcmp(lex, "<!--"))
 				 {
-					lex[lexi] = '\0'; //REDUNDANT
 					while (!check_end(lex, "-->"))
 					{
 						lex[lexi++] = buf[index++];
@@ -216,16 +218,18 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 				while (buf[index] != ' ' && buf[index] != '>')
 					lex[lexi++] = buf[index++];
 				lex[lexi] = '\0';
-				// This is XML declaratino
+				// This is XML declaration
 				if (!ft_strcmp(lex, "<?xml"))
 				{
 					lexi = 0;
-					t_xml_node *desc = xml_node_new(NULL);
+					desc = xml_node_new(NULL);
 					parse_attr(buf, &index, lex, &lexi, desc);
 
 					doc->version = ft_strdup(xml_node_attr_value(desc, "version"));
 					doc->encoding = ft_strdup(xml_node_attr_value(desc, "encoding"));
 					xml_node_free(desc);
+					lexi = 0;
+					index++;
 					continue;
 				}
 			}
@@ -237,6 +241,7 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 			index++;
 			if (parse_attr(buf, &index, lex, &lexi, current_node) == TAG_INLINE)
 			{
+				lexi = 0;
 				current_node = current_node->parent;
 				index++;
 				continue;
@@ -253,7 +258,12 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 			continue;
 		}
 		else
-		lex[lexi++] = buf[index++];
+		{
+			lex[lexi++] = buf[index++];
+			//ignore newlines and tabs
+			if (lex[lexi - 1] == '\n' || lex[lexi - 1] == '\t')
+				lexi--;
+		}
 	}
 	return (TRUE);
 }

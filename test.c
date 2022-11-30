@@ -17,14 +17,13 @@ void	print_node(t_xml_node *node, int depth)
 	}
 	d[depth] = '\0';
 	printf("%s", d);
-		printf("TAG = %s ", node->tag);
-		printf("DATA = %s ", node->data);
+	printf("TAG = %s DATA = %s\n", node->tag, node->data);
 	while (ai < node->attributes.size)
 	{
-		printf("%s   key = %s value = %s", d, node->attributes.list[ai].key, node->attributes.list[ai].value);
+		printf("%s   key = %s value = %s\n", d, node->attributes.list[ai].key, node->attributes.list[ai].value);
 		ai++;
 	}
-	printf("\n%schildren: %d\n", d, node->children.size);
+	printf("%schildren: %d\n", d, node->children.size);
 	while (index < node->children.size)
 	{
 		print_node(node->children.list[index], depth + 1);
