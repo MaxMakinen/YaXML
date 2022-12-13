@@ -10,14 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "yaxml.h"
 
 t_xml_node	*xml_node_new(t_xml_node *parent)
 {
 	t_xml_node	*new;
 
-	new = (t_xml_node*)malloc(sizeof(t_xml_node));
+	new = (t_xml_node *)malloc(sizeof(t_xml_node));
 	new->parent = parent;
 	new->tag = NULL;
 	new->data = NULL;
@@ -30,7 +29,7 @@ t_xml_node	*xml_node_new(t_xml_node *parent)
 
 t_xml_node	*xml_node_child(t_xml_node *parent, int index)
 {
-	return(parent->children.list[index]);
+	return (parent->children.list[index]);
 }
 
 t_xml_nodelist	*xml_node_children(t_xml_node *parent, const char *tag)

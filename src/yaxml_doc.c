@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "yaxml.h"
 
 static int	check_end(const char *str, const char *target)
@@ -32,16 +31,16 @@ static int	check_end(const char *str, const char *target)
 	return (TRUE);
 }
 
-static t_tag_type parse_attr(char *buf, int *index, char *lex, int *lexi, \
+static t_tag_type	parse_attr(char *buf, int *index, char *lex, int *lexi, \
 t_xml_node *current_node)
 {
 	t_xml_attr	current_attr;
+
 	current_attr.key = 0;
 	current_attr.value = 0;
 	while (buf[*index] != '>')
 	{
 		lex[(*lexi)++] = buf[(*index)++];
-
 		//tag name
 		if (buf[*index] == ' ' && !current_node->tag)
 		{
@@ -49,13 +48,11 @@ t_xml_node *current_node)
 			current_node->tag = ft_strdup(lex);
 			*lexi = 0;
 			(*index)++;
-			continue;
+			continue ;
 		}
-
 		//usually ignore spaces
 		if (lex[*lexi - 1] == ' ')
 			(*lexi)--;
-
 		// attribute key
 		if (buf[*index] == '=')
 		{
@@ -63,7 +60,6 @@ t_xml_node *current_node)
 			current_attr.key = ft_strdup(lex);
 			*lexi = 0;
 		}
-
 		// attribute value
 		if (buf[*index] == '"')
 		{
@@ -82,9 +78,8 @@ t_xml_node *current_node)
 			current_attr.value = NULL;
 			*lexi = 0;
 			(*index)++;
-			continue;
+			continue ;
 		}
-
 		//Inline mode
 		if (buf[*index - 1] == '/' && buf[*index] == '>')
 		{
@@ -98,9 +93,9 @@ t_xml_node *current_node)
 	return (TAG_START);
 }
 
-size_t get_size(const char *path)
+size_t	get_size(const char *path)
 {
-	int 	fd;
+	int		fd;
 	size_t	size;
 	size_t	temp;
 	char	buf[4096];
@@ -160,13 +155,11 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 	}
 	doc->head = xml_node_new(NULL);
 	current_node = doc->head;
-
 	while (buf[index] != '\0')
 	{
 		if (buf[index] == '<')
 		{
 			lex[lexi] = '\0';
-
 			//data
 			if (lexi > 0)
 			{
@@ -175,12 +168,10 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 					ft_putendl_fd("ERROR: Text outside document", 2);
 					return (FALSE);
 				}
-				if (!current_node->data){
-				current_node->data = ft_strdup(lex);
-				}
+				if (!current_node->data)
+					current_node->data = ft_strdup(lex);
 				lexi = 0;
 			}
-
 			//End of node
 			if (buf[index + 1] == '/')
 			{
@@ -188,13 +179,11 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 				while (buf[index] != '>')
 					lex[lexi++] = buf[index++];
 				lex[lexi] = '\0';
-
 				if (!current_node)
 				{
 					ft_putendl_fd("ERROR: Already at head", 2);
 					return (FALSE);
 				}
-
 				if (ft_strcmp(current_node->tag, lex))
 				{
 					ft_putstr_fd(current_node->tag, 2);
@@ -203,28 +192,26 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 					ft_putendl_fd("ERROR: Mismatched tags", 2);
 					return (FALSE);
 				}
-
 				current_node = current_node->parent;
 				index++;
 				lexi = 0;
-				continue;
+				continue ;
 			}
-
 			// Special nodes - COMMENTS NEED MORE WORK
 			if (buf[index + 1] == '!')
 			{
 				while (buf[index] != ' ' && buf[index] != '>')
 					lex[lexi++] = buf[index++];
 				lex[lexi] = '\0';
-				 //comments - This while loop seems kinda stupid, make it better
-				 if (!ft_strcmp(lex, "<!--"))
-				 {
+				//comments - This while loop seems kinda stupid, make it better
+				if (!ft_strcmp(lex, "<!--"))
+				{
 					while (!check_end(lex, "-->"))
 					{
 						lex[lexi++] = buf[index++];
 						lex[lexi] = '\0';
 					}
-					continue;
+					continue ;
 				}
 			}
 			//declaration tags
@@ -239,19 +226,18 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 					lexi = 0;
 					desc = xml_node_new(NULL);
 					parse_attr(buf, &index, lex, &lexi, desc);
-
-					doc->version = ft_strdup(xml_node_attr_value(desc, "version"));
-					doc->encoding = ft_strdup(xml_node_attr_value(desc, "encoding"));
+					doc->version = ft_strdup(\
+					xml_node_attr_value(desc, "version"));
+					doc->encoding = ft_strdup(\
+					xml_node_attr_value(desc, "encoding"));
 					xml_node_free(desc);
 					lexi = 0;
 					index++;
-					continue;
+					continue ;
 				}
 			}
-
 			//set current node
 			current_node = xml_node_new(current_node);
-
 			//start tag
 			index++;
 			if (parse_attr(buf, &index, lex, &lexi, current_node) == TAG_INLINE)
@@ -259,18 +245,16 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 				lexi = 0;
 				current_node = current_node->parent;
 				index++;
-				continue;
+				continue ;
 			}
-
 			//set tag name if none
 			lex[lexi] = '\0';
 			if (!current_node->tag)
 				current_node->tag = ft_strdup(lex);
-
 			//reset lexer
 			lexi = 0;
 			index++;
-			continue;
+			continue ;
 		}
 		else
 		{
