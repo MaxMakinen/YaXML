@@ -19,7 +19,7 @@
 # include <errno.h>
 # include <fcntl.h>
 
-# include "libft/libft.h"
+# include "libft.h"
 
 # ifndef TRUE
 #  define TRUE 1

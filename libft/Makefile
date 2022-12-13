@@ -11,12 +11,12 @@
 # **************************************************************************** #
 
 CC =		clang
-FLAGS = 	-Wall -Wextra -Werror -c
-DEBFLAGS =	-Wall -Wextra  -Werror -g -c
-NAME =		libft.a
+FLAGS := 	-Wall -Wextra -Werror -c
+DEBFLAGS :=	-Wall -Wextra -Werror -g -c
+NAME :=		libft.a
 SRC_PATH =	./
 INCLUDE =	./
-SRCS =		ft_calloc.c ft_strsub.c ft_lstadd.c ft_lstiter.c ft_lstmap.c	\
+SRCS :=		ft_calloc.c ft_strsub.c ft_lstadd.c ft_lstiter.c ft_lstmap.c	\
 ft_strchr.c ft_lstnew.c ft_lstdel.c ft_lstdelone.c ft_strlcpy.c	ft_isprint.c\
 ft_memdel.c ft_putstr_fd.c ft_strjoin.c ft_strnstr.c ft_isspace.c			\
 ft_memmove.c ft_strcat.c ft_strlcat.c ft_strrchr.c ft_atoi.c ft_isupper.c	\
@@ -32,7 +32,7 @@ ft_swapchr.c ft_swapint.c ft_swapptr.c get_next_line.c ft_isbdigit.c		\
 ft_isodigit.c ft_isdigit_base.c ft_abs.c ft_closefd.c ft_openfd.c ft_error.c\
 ft_isnumber.c ft_isprefix.c ft_lerp.c ft_norm.c ft_itoa_base.c ft_pow.c \
 ft_realloc.c
-OBJECTS =	$(SRCS:.c=.o)
+OBJECTS :=	$(SRCS:.c=.o)
 HEADER =	-I $(INCLUDE)
 
 all: $(NAME)
