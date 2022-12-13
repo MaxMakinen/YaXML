@@ -106,14 +106,23 @@ size_t get_size(const char *path)
 	char	buf[4096];
 
 	size = 0;
-	ft_openfd(path, &fd);
+	fd = open(path, O_RDONLY);
+	if (fd == -1)
+	{
+		ft_putendl_fd("ERROR: Could not load file", 2);
+		return (FALSE);
+	}
 	temp = read(fd, buf, 4096);
 	while (temp > 0)
 	{
 		size += temp;
 		temp = read(fd, buf, 4096);
 	}
-	ft_closefd(fd);
+	if (close(fd) == -1)
+	{
+		ft_putendl_fd("ERROR: Couild not close file at get_size", 2);
+		return (FALSE);
+	}
 	return (size);
 }
 
@@ -135,14 +144,20 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 	fd = open(path, O_RDONLY);
 	if (fd == -1)
 	{
-		ft_error("ERROR: Could not load file");
+		ft_putendl_fd("ERROR: Could not load file", 2);
 		return (FALSE);
 	}
 	if (read(fd, buf, size) == -1)
-		ft_error("ERROR: Couild not read file");
+	{
+		ft_putendl_fd("ERROR: Couild not read file", 2);
+		return (FALSE);
+	}
 	buf[size] = '\0';
-	ft_closefd(fd);
-
+	if (close(fd) == -1)
+	{
+		ft_putendl_fd("ERROR: Could not close file at xml_doc_load", 2);
+		return (FALSE);
+	}
 	doc->head = xml_node_new(NULL);
 	current_node = doc->head;
 
@@ -157,7 +172,7 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 			{
 				if (!current_node)
 				{
-					ft_error("ERROR: Text outside document");
+					ft_putendl_fd("ERROR: Text outside document", 2);
 					return (FALSE);
 				}
 				if (!current_node->data){
@@ -176,7 +191,7 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 
 				if (!current_node)
 				{
-					ft_error("ERROR: Already at head");
+					ft_putendl_fd("ERROR: Already at head", 2);
 					return (FALSE);
 				}
 
@@ -185,7 +200,7 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 					ft_putstr_fd(current_node->tag, 2);
 					ft_putstr_fd(" != ", 2);
 					ft_putendl_fd(lex, 2);
-					ft_error("ERROR: Mismatched tags");
+					ft_putendl_fd("ERROR: Mismatched tags", 2);
 					return (FALSE);
 				}
 

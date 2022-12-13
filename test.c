@@ -32,7 +32,7 @@ void	print_node(t_xml_node *node, int depth)
 	}
 }
 
-int	main(void)
+int	main(int ac, char **av)
 {
 	t_xml_doc	doc;
 	t_xml_node	*main_node;
@@ -40,7 +40,12 @@ int	main(void)
 	int	nodes = 0;
 	int	attr = 0;
 	
-	if (xml_doc_load(&doc, "test.xml"))
+	if (ac != 2)
+	{
+		printf("Give input file\n");
+		return (0);
+	}
+	if (xml_doc_load(&doc, av[1]))
 	{
 		printf("XML Document (version=%s, encoding=%s)\n\n", doc.version, doc.encoding);
 
@@ -48,5 +53,6 @@ int	main(void)
 		print_node(doc.head, 0);
 		xml_doc_free(&doc);
 	}
+	printf("%f %f %f\n", atof(" 1.0 0.0 5.0 "), atof(" 0.0 5.0 "), atof(" 5.0 "));
 	return (0);
 }

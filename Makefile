@@ -12,7 +12,7 @@
 
 CC =		clang
 FLAGS = 	-Wall -Wextra -Werror -c
-DEBFLAGS =	-Wall -Wextra  -Werror -g -c
+DEBFLAGS =	-Wall -Wextra -Werror -g -c
 NAME =		yaxml.a
 SRC_PATH =	./
 INCLUDE =	./
@@ -35,7 +35,7 @@ debug_lib: debug_objects
 	@ar rc $(NAME) $(OBJECTS)
 
 debug: fclean debug_lib
-	@echo "Debug mode"
+	@echo "Yaxml debug mode"
 	@-rm -f $(OBJECTS)
 
 clean:
@@ -48,4 +48,4 @@ re: fclean all
 
 tidy: all clean
 
-.PHONY: all clean fclean re
+.PHONY: all debug clean fclean re tidy
