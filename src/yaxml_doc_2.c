@@ -12,6 +12,14 @@
 
 #include "yaxml.h"
 
+int	error_free(char *buf, char *err_str)
+{
+	if (err_str != NULL)
+		ft_putendl_fd(err_str, 2);
+	free(buf);
+	return (FALSE);
+}
+
 static int	check_end(const char *str, const char *target)
 {
 	int	str_len;
@@ -65,32 +73,49 @@ int	read_file(char **buf, const char *path)
 	size_t		size;
 
 	size = get_size(path);
+	if (size == FALSE)
+		return (FALSE);
 	*buf = (char *)malloc(sizeof(*buf) * size + 1);
 	if (!buf)
-	{
-		free(*buf);
-		return (FALSE);
-	}
+		return (error_free(*buf, "Buffer malloc failed"));
 	fd = open(path, O_RDONLY);
 	if (fd == -1)
-	{
-		ft_putendl_fd("ERROR: Could not load file", 2);
-		free(*buf);
-		return (FALSE);
-	}
+		return (error_free(*buf, "Could not load file"));
 	if (read(fd, *buf, size) == -1)
-	{
-		ft_putendl_fd("ERROR: Couild not read file", 2);
-		free(*buf);
-		return (FALSE);
-	}
+		return (error_free(*buf, "Could not read file"));
 	buf[size] = '\0';
 	if (close(fd) == -1)
+		return (error_free(*buf, "Could not close file at read_file"));
+	return (TRUE);
+}
+
+int	get_data(t_xml_node *current_node, char *buf, char lex[256])
+{
+	if (!current_node)
+		return (error_free(buf, "Text outside document"));
+	if (!current_node->data)
+		current_node->data = ft_strdup(lex);
+	return (TRUE);
+}
+
+int node_end(char *buf, char *lex, int index[2], t_xml_node *current_node)
+{
+	index[0] += 2;
+	while (buf[index[0]] != '>')
+		lex[index[1]++] = buf[index[0]++];
+	lex[index[1]] = '\0';
+	if (!current_node)
+		return (error_free(buf, "Already at head"));
+	if (ft_strcmp(current_node->tag, lex))
 	{
-		ft_putendl_fd("ERROR: Could not close file at xml_doc_load", 2);
-		free(*buf);
-		return (FALSE);
+		ft_putstr_fd(current_node->tag, 2);
+		ft_putstr_fd(" != ", 2);
+		ft_putendl_fd(lex, 2);
+		return (error_free(buf, "Mismatched tags"));
 	}
+	current_node = current_node->parent;
+	index[0]++;
+	index[1] = 0;
 	return (TRUE);
 }
 
@@ -119,44 +144,35 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 		if (buf[index[0]] == '<')
 		{
 			lex[index[1]] = '\0';
-			//data
 			if (index[1] > 0)
 			{
-				if (!current_node)
-				{
-					ft_putendl_fd("ERROR: Text outside document", 2);
-					free(buf);
+				if (!get_data(current_node, buf, lex))
 					return (FALSE);
-				}
-				if (!current_node->data)
-					current_node->data = ft_strdup(lex);
 				index[1] = 0;
 			}
 			//End of node
 			if (buf[index[0] + 1] == '/')
 			{
+				/*
 				index[0] += 2;
 				while (buf[index[0]] != '>')
 					lex[index[1]++] = buf[index[0]++];
 				lex[index[1]] = '\0';
 				if (!current_node)
-				{
-					ft_putendl_fd("ERROR: Already at head", 2);
-					free(buf);
-					return (FALSE);
-				}
+					return (error_free(buf, "Already at head"));
 				if (ft_strcmp(current_node->tag, lex))
 				{
 					ft_putstr_fd(current_node->tag, 2);
 					ft_putstr_fd(" != ", 2);
 					ft_putendl_fd(lex, 2);
-					ft_putendl_fd("ERROR: Mismatched tags", 2);
-					free(buf);
-					return (FALSE);
+					return (error_free(buf, "Mismatched tags"));
 				}
 				current_node = current_node->parent;
 				index[0]++;
 				index[1] = 0;
+				*/
+				if (!node_end(buf, lex, index, current_node))
+					return (FALSE);
 				continue ;
 			}
 			// Special nodes - COMMENTS NEED MORE WORK
