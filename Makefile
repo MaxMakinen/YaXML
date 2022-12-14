@@ -17,7 +17,11 @@ OBJ_DIR =	obj
 SRC_DIR =	src
 INCLUDE =	-I include/ -I libft/
 LIBFT =		./libft/libft.a
-OBJS =		yaxml_doc.o yaxml_free.o yaxml_list.o yaxml_node.o
+OBJS =		yaxml_doc.o\
+			yaxml_free.o\
+			yaxml_list.o\
+			yaxml_node.o\
+			yaxml_parse_attr.o
 HEADER =	-I $(INCLUDE) -I libft/
 OBJECTS =	$(addprefix $(OBJ_DIR)/, $(OBJS))
 
@@ -26,7 +30,7 @@ all: $(NAME)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	@$(CC) -c $(CFLAGS) -g -o $@ $< $(INCLUDE)
 
-$(NAME): $(OBJECTS) $(LIBFT)
+$(NAME): $(OBJECTS)
 	ar rc $@ $^
 
 $(OBJ_DIR):
