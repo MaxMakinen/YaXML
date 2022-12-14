@@ -59,10 +59,43 @@ size_t	get_size(const char *path)
 	return (size);
 }
 
-int	xml_doc_load(t_xml_doc *doc, const char *path)
+int	read_file(char **buf, const char *path)
 {
 	int			fd;
 	size_t		size;
+
+	size = get_size(path);
+	*buf = (char *)malloc(sizeof(*buf) * size + 1);
+	if (!buf)
+	{
+		free(*buf);
+		return (FALSE);
+	}
+	fd = open(path, O_RDONLY);
+	if (fd == -1)
+	{
+		ft_putendl_fd("ERROR: Could not load file", 2);
+		free(*buf);
+		return (FALSE);
+	}
+	if (read(fd, *buf, size) == -1)
+	{
+		ft_putendl_fd("ERROR: Couild not read file", 2);
+		free(*buf);
+		return (FALSE);
+	}
+	buf[size] = '\0';
+	if (close(fd) == -1)
+	{
+		ft_putendl_fd("ERROR: Could not close file at xml_doc_load", 2);
+		free(*buf);
+		return (FALSE);
+	}
+	return (TRUE);
+}
+
+int	xml_doc_load(t_xml_doc *doc, const char *path)
+{
 	char		*buf;
 	char		lex[256];
 	int			index[2];
@@ -72,34 +105,14 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 	index[0] = 0;
 	index[1] = 1;
 	lex[0] = 0;
-	size = get_size(path);
-	buf = (char *)malloc(sizeof(*buf) * size + 1);
-	if (!buf)
-	{
-		free(buf);
+	if (!read_file(&buf, path))
 		return (FALSE);
-	}
-	fd = open(path, O_RDONLY);
-	if (fd == -1)
-	{
-		ft_putendl_fd("ERROR: Could not load file", 2);
-		free(buf);
-		return (FALSE);
-	}
-	if (read(fd, buf, size) == -1)
-	{
-		ft_putendl_fd("ERROR: Couild not read file", 2);
-		free(buf);
-		return (FALSE);
-	}
-	buf[size] = '\0';
-	if (close(fd) == -1)
-	{
-		ft_putendl_fd("ERROR: Could not close file at xml_doc_load", 2);
-		free(buf);
-		return (FALSE);
-	}
 	doc->head = xml_node_new(NULL);
+	if (doc->head == NULL)
+	{
+		xml_doc_free(doc);
+		return (FALSE);
+	}
 	current_node = doc->head;
 	while (buf[index[0]] != '\0')
 	{
