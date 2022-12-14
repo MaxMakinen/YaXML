@@ -17,12 +17,11 @@ OBJ_DIR =	obj
 SRC_DIR =	src
 INCLUDE =	-I include/ -I libft/
 LIBFT =		./libft/libft.a
-OBJS =		yaxml_doc.o\
+OBJS =		yaxml_doc_2.o\
 			yaxml_free.o\
 			yaxml_list.o\
 			yaxml_node.o\
 			yaxml_parse_attr.o
-HEADER =	-I $(INCLUDE) -I libft/
 OBJECTS =	$(addprefix $(OBJ_DIR)/, $(OBJS))
 
 all: $(NAME)
@@ -39,7 +38,11 @@ $(OBJ_DIR):
 $(LIBFT):
 	@make -C libft/
 
+test: test_files/test.c $(OBJECTS) $(LIBFT)
+	$(CC) -o $@ -g $(INCLUDE) $^
+
 clean:
+	@rm test
 	@rm -rf $(OBJ_DIR)
 	@make -C libft/ clean
 
