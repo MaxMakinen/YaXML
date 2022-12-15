@@ -15,7 +15,10 @@
 int	error_free(char *buf, char *err_str)
 {
 	if (err_str != NULL)
+	{
+		ft_putstr_fd("ERROR: ", 2);
 		ft_putendl_fd(err_str, 2);
+	}
 	free(buf);
 	return (FALSE);
 }
@@ -153,7 +156,9 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 			//End of node
 			if (buf[index[0] + 1] == '/')
 			{
-				/*
+				int	debug = 0;
+				if (debug == 0)
+				{
 				index[0] += 2;
 				while (buf[index[0]] != '>')
 					lex[index[1]++] = buf[index[0]++];
@@ -170,9 +175,12 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 				current_node = current_node->parent;
 				index[0]++;
 				index[1] = 0;
-				*/
+				}
+				else if (debug)
+				{
 				if (!node_end(buf, lex, index, current_node))
 					return (FALSE);
+				}
 				continue ;
 			}
 			// Special nodes - COMMENTS NEED MORE WORK
