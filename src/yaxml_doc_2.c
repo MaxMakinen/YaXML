@@ -101,22 +101,22 @@ int	get_data(t_xml_node *current_node, char *buf, char lex[256])
 	return (TRUE);
 }
 
-int node_end(char *buf, char *lex, int index[2], t_xml_node *current_node)
+int node_end(char *buf, char lex[256], int index[2], t_xml_node **current_node)
 {
 	index[0] += 2;
 	while (buf[index[0]] != '>')
 		lex[index[1]++] = buf[index[0]++];
 	lex[index[1]] = '\0';
-	if (!current_node)
+	if (!*current_node)
 		return (error_free(buf, "Already at head"));
-	if (ft_strcmp(current_node->tag, lex))
+	if (ft_strcmp((*current_node)->tag, lex))
 	{
-		ft_putstr_fd(current_node->tag, 2);
+		ft_putstr_fd((*current_node)->tag, 2);
 		ft_putstr_fd(" != ", 2);
 		ft_putendl_fd(lex, 2);
 		return (error_free(buf, "Mismatched tags"));
 	}
-	current_node = current_node->parent;
+	*current_node = (*current_node)->parent;
 	index[0]++;
 	index[1] = 0;
 	return (TRUE);
@@ -156,31 +156,8 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 			//End of node
 			if (buf[index[0] + 1] == '/')
 			{
-				int	debug = 0;
-				if (debug == 0)
-				{
-				index[0] += 2;
-				while (buf[index[0]] != '>')
-					lex[index[1]++] = buf[index[0]++];
-				lex[index[1]] = '\0';
-				if (!current_node)
-					return (error_free(buf, "Already at head"));
-				if (ft_strcmp(current_node->tag, lex))
-				{
-					ft_putstr_fd(current_node->tag, 2);
-					ft_putstr_fd(" != ", 2);
-					ft_putendl_fd(lex, 2);
-					return (error_free(buf, "Mismatched tags"));
-				}
-				current_node = current_node->parent;
-				index[0]++;
-				index[1] = 0;
-				}
-				else if (debug)
-				{
-				if (!node_end(buf, lex, index, current_node))
+				if (!node_end(buf, lex, index, &current_node))
 					return (FALSE);
-				}
 				continue ;
 			}
 			// Special nodes - COMMENTS NEED MORE WORK
