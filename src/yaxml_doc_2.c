@@ -32,6 +32,7 @@ static int	check_end(const char *str, const char *target)
 	index[0] = 0;
 	str_len = ft_strlen(str);
 	target_len = ft_strlen(target);
+	printf("\tCHECK END : %d\n\n",target_len);
 	if (str_len < target_len)
 		return (FALSE);
 	while (index[0] < target_len)
@@ -153,7 +154,6 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 					return (FALSE);
 				index[1] = 0;
 			}
-			//End of node
 			if (buf[index[0] + 1] == '/')
 			{
 				if (!node_end(buf, lex, index, &current_node))
@@ -163,10 +163,13 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 			// Special nodes - COMMENTS NEED MORE WORK
 			if (buf[index[0] + 1] == '!')
 			{
+				// while loop is problematic. 
+				// Doesn't recognize comments if there's no space after <!--
 				while (buf[index[0]] != ' ' && buf[index[0]] != '>')
 					lex[index[1]++] = buf[index[0]++];
 				lex[index[1]] = '\0';
 				//comments - This while loop seems kinda stupid, make it better
+				printf("I CAN HAZ COMMENT?\n%s\n", lex);
 				if (!ft_strcmp(lex, "<!--"))
 				{
 					while (!check_end(lex, "-->"))

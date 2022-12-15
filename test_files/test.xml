@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--Comment line2-->
 <object type="sphere">
 	<loc> 1.0 5.0 3.0 </loc>
 	<coi> 5.0 0.0 9.0 </coi>
@@ -8,3 +9,4 @@
 	<field name="name" type="string" />
 	<field name="age" type="int" />
 </struct>
+<!--comment eof-->
