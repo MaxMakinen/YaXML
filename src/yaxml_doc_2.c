@@ -122,7 +122,7 @@ int node_end(char *buf, char lex[256], int index[2], t_xml_node **current_node)
 	index[1] = 0;
 	return (TRUE);
 }
-
+/*ADD ERROR IF FILE IS DIRECTORY*/
 int	xml_doc_load(t_xml_doc *doc, const char *path)
 {
 	char		*buf;
