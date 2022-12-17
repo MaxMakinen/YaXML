@@ -94,3 +94,19 @@ t_xml_attr	*xml_node_attr(t_xml_node *node, char *key)
 	}
 	return (NULL);
 }
+
+t_xml_node	*xml_node_tag(t_xml_nodelist *list, char *tag)
+{
+	t_xml_node	*node;
+	int			index;
+
+	index = 0;
+	while (index < list->size)
+	{
+		node = list->list[index];
+		if (!ft_strcmp(node->tag, tag))
+			return (node);
+		index++;
+	}
+	return (NULL);
+}

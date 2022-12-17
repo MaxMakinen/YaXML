@@ -82,3 +82,8 @@ int	xml_nodelist_add(t_xml_nodelist *list, t_xml_node *node)
 	list->list[list->size++] = node;
 	return (TRUE);
 }
+
+t_xml_node	*xml_nodelist_at(t_xml_nodelist *list, int index)
+{
+	return (list->list[index]);
+}

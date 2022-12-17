@@ -12,7 +12,7 @@
 
 #include "yaxml.h"
 
-int	error_free(char *buf, char *err_str)
+int	xml_error_free(char *buf, char *err_str)
 {
 	if (err_str != NULL)
 	{
@@ -81,22 +81,22 @@ int	read_file(char **buf, const char *path)
 		return (FALSE);
 	*buf = (char *)malloc(sizeof(*buf) * size + 1);
 	if (!buf)
-		return (error_free(*buf, "Buffer malloc failed"));
+		return (xml_error_free(*buf, "Buffer malloc failed"));
 	fd = open(path, O_RDONLY);
 	if (fd == -1)
-		return (error_free(*buf, "Could not load file"));
+		return (xml_error_free(*buf, "Could not load file"));
 	if (read(fd, *buf, size) == -1)
-		return (error_free(*buf, "Could not read file"));
+		return (xml_error_free(*buf, "Could not read file"));
 	buf[size] = '\0';
 	if (close(fd) == -1)
-		return (error_free(*buf, "Could not close file at read_file"));
+		return (xml_error_free(*buf, "Could not close file at read_file"));
 	return (TRUE);
 }
 
 int	get_data(t_xml_node *current_node, char *buf, char lex[256])
 {
 	if (!current_node)
-		return (error_free(buf, "Text outside document"));
+		return (xml_error_free(buf, "Text outside document"));
 	if (!current_node->data)
 		current_node->data = ft_strdup(lex);
 	return (TRUE);
@@ -109,13 +109,13 @@ int node_end(char *buf, char lex[256], int index[2], t_xml_node **current_node)
 		lex[index[1]++] = buf[index[0]++];
 	lex[index[1]] = '\0';
 	if (!*current_node)
-		return (error_free(buf, "Already at head"));
+		return (xml_error_free(buf, "Already at head"));
 	if (ft_strcmp((*current_node)->tag, lex))
 	{
 		ft_putstr_fd((*current_node)->tag, 2);
 		ft_putstr_fd(" != ", 2);
 		ft_putendl_fd(lex, 2);
-		return (error_free(buf, "Mismatched tags"));
+		return (xml_error_free(buf, "Mismatched tags"));
 	}
 	*current_node = (*current_node)->parent;
 	index[0]++;
@@ -164,6 +164,7 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 			if (buf[index[0] + 1] == '!')
 			{
 				// while loop is problematic. 
+				// TODO COMMMENTS ARE BROKEN
 				// Doesn't recognize comments if there's no space after <!--
 				while (buf[index[0]] != ' ' && buf[index[0]] != '>')
 					lex[index[1]++] = buf[index[0]++];
