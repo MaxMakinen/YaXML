@@ -75,21 +75,23 @@ int	read_file(char **buf, const char *path)
 {
 	int			fd;
 	size_t		size;
+	char		*temp;
 
 	size = get_size(path);
 	if (size == FALSE)
 		return (FALSE);
-	*buf = (char *)malloc(sizeof(*buf) * size + 1);
-	if (!buf)
-		return (xml_error_free(*buf, "Buffer malloc failed"));
+	temp = (char *)malloc(sizeof(temp) * size + 1);
+	if (!temp)
+		return (xml_error_free(temp, "Buffer malloc failed"));
 	fd = open(path, O_RDONLY);
 	if (fd == -1)
-		return (xml_error_free(*buf, "Could not load file"));
-	if (read(fd, *buf, size) == -1)
-		return (xml_error_free(*buf, "Could not read file"));
-	buf[size] = '\0';
+		return (xml_error_free(temp, "Could not load file"));
+	if (read(fd, temp, size) == -1)
+		return (xml_error_free(temp, "Could not read file"));
+	temp[size] = '\0';
 	if (close(fd) == -1)
-		return (xml_error_free(*buf, "Could not close file at read_file"));
+		return (xml_error_free(temp, "Could not close file at read_file"));
+	*buf = temp;
 	return (TRUE);
 }
 
@@ -125,7 +127,7 @@ int node_end(char *buf, char lex[256], int index[2], t_xml_node **current_node)
 /*ADD ERROR IF FILE IS DIRECTORY*/
 int	xml_doc_load(t_xml_doc *doc, const char *path)
 {
-	char		*buf;
+	char		*buf = NULL;
 	char		lex[256];
 	int			index[2];
 	t_xml_node	*current_node;
@@ -231,6 +233,8 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 				index[1]--;
 		}
 	}
-	free(buf);
+	//xml_error_free(buf, "Tis fucked");
+	//if (buf != NULL)
+	//	free(buf);
 	return (TRUE);
 }

@@ -21,6 +21,7 @@ static int	check_end(const char *str, const char *target)
 	index[0] = 0;
 	str_len = ft_strlen(str);
 	target_len = ft_strlen(target);
+	printf("\tCHECK END : %s\n\n",target_len);
 	if (str_len < target_len)
 		return (FALSE);
 	while (index[0] < target_len)

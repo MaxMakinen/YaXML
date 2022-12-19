@@ -15,8 +15,8 @@ CFLAGS := 	-Wall -Wextra -Werror
 NAME :=		yaxml.a
 OBJ_DIR =	obj
 SRC_DIR =	src
-INCLUDE =	-I include/ -I libft/
-LIBFT =		./libft/libft.a
+INCLUDE =	-I ./include/ -I ./libft/
+LIBFT =		-L ./libft/
 OBJS =		yaxml_doc_2.o\
 			yaxml_free.o\
 			yaxml_list.o\
