@@ -83,3 +83,19 @@ int	xml_declaration(const char *buf, int *index, t_xml_doc *doc)
 	}
 	return (FALSE);
 }
+
+int	xml_start_tag(const char *buf, int index[2], char *lex, t_xml_node **node)
+{
+	index[0]++;
+	if (parse_attr(buf, index, lex, *node) == TAG_INLINE)
+	{
+		index[1] = 0;
+		*node = (*node)->parent;
+		index[0]++;
+		return (TRUE);
+	}
+	lex[index[1]] = '\0';
+	if (!(*node)->tag)
+		(*node)->tag = ft_strdup(lex);
+	return (FALSE);
+}

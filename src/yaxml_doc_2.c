@@ -158,22 +158,9 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 				if (xml_declaration(buf, index, doc))
 					continue ;
 			}
-			//set current node
 			current_node = xml_node_new(current_node);
-			//start tag
-			index[0]++;
-			if (parse_attr(buf, index, lex, current_node) == TAG_INLINE)
-			{
-				index[1] = 0;
-				current_node = current_node->parent;
-				index[0]++;
+			if (xml_start_tag(buf, index, lex, &current_node))
 				continue ;
-			}
-			//set tag name if none
-			lex[index[1]] = '\0';
-			if (!current_node->tag)
-				current_node->tag = ft_strdup(lex);
-			//reset lexer
 			index[1] = 0;
 			index[0]++;
 			continue ;
@@ -181,7 +168,6 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 		else
 		{
 			lex[index[1]++] = buf[index[0]++];
-			//ignore newlines and tabs
 			if (lex[index[1] - 1] == '\n' || lex[index[1] - 1] == '\t')
 				index[1]--;
 		}
