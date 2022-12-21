@@ -102,8 +102,6 @@ int	node_end(char *buf, char lex[256], int index[2], t_xml_node **current_node)
 	return (TRUE);
 }
 
-int	check_end(const char *str, const char *target);
-
 int	xml_doc_load(t_xml_doc *doc, const char *path)
 {
 	t_buffer	buffer;
@@ -111,7 +109,6 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 	char		lex[1024];
 	int			index[2];
 	t_xml_node	*current_node;
-	int			temp;
 
 	index[0] = 0;
 	index[1] = 1;
@@ -146,12 +143,8 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 			}
 			if (buf[index[0] + 1] == '!')
 			{
-				temp = index[0];
-				if (xml_comment(buf, &temp))
-				{
-					index[0] = ++temp;
+				if (xml_comment(buf, &index[0]))
 					continue ;
-				}
 			}
 			if (buf[index[0] + 1] == '?')
 			{

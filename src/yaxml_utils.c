@@ -40,20 +40,26 @@ void	*resize_memory(void *ptr, size_t size, size_t old_size)
 
 int	xml_comment(const char *buf, int *index)
 {
-	if (buf[*index + 2] == '\0' || buf[*index + 3] == '\0' || \
-		buf[*index + 2] != '-' || buf[*index + 3] != '-')
+	int	temp;
+
+	temp = *index;
+	if (buf[temp + 2] == '\0' || buf[temp + 3] == '\0' || \
+		buf[temp + 2] != '-' || buf[temp + 3] != '-')
 		return (FALSE);
-	while (buf[*index] != '\0')
+	while (buf[temp] != '\0')
 	{
-		while (buf[*index] != '\0' && buf[*index] != '>')
-			(*index)++;
-		if (buf[*index] == '\0')
+		while (buf[temp] != '\0' && buf[temp] != '>')
+			(temp)++;
+		if (buf[temp] == '\0')
 			return (FALSE);
-		else if (buf[*index] == '>' && buf[*index - 1] == '-' && \
-		buf[*index - 2] == '-')
+		else if (buf[temp] == '>' && buf[temp - 1] == '-' && \
+		buf[temp - 2] == '-')
+		{
+			*index = ++temp;
 			return (TRUE);
+		}
 		else
-			(*index)++;
+			(temp)++;
 	}
 	return (FALSE);
 }
