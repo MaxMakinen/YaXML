@@ -61,7 +61,6 @@ int	xml_declaration(const char *buf, int *index, t_xml_doc *doc)
 	buf[index[0]] != '>')
 		lex[index[1]++] = buf[index[0]++];
 	lex[index[1]] = '\0';
-	// This is XML declaration
 	if (!ft_strcmp(lex, "<?xml"))
 	{
 		index[1] = 0;
