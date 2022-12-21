@@ -81,7 +81,8 @@ typedef struct s_buffer
 int				xml_doc_load(t_xml_doc *doc, const char *path);
 int				xml_comment(const char *buf, int *index);
 int				xml_declaration(const char *buf, int *index, t_xml_doc *doc);
-int	xml_start_tag(const char *buf, int index[2], char *lex, t_xml_node **node);
+int				xml_start_tag(const char *buf, int index[2], char *lex, \
+				t_xml_node **node);
 
 /* Utility function */
 int				xml_return_error(const char *str);
