@@ -23,7 +23,7 @@ int	xml_error_free(char *buf, char *err_str)
 	return (FALSE);
 }
 
-size_t	get_size(const char *path)
+size_t	xml_get_size(const char *path)
 {
 	int		fd;
 	size_t	size;
@@ -47,15 +47,15 @@ size_t	get_size(const char *path)
 		temp = read(fd, buf, 4096);
 	}
 	if (close(fd) == -1)
-		return (xml_return_error("ERROR: Could not close file at get_size"));
+		return (xml_return_error("ERROR: Could not close file"));
 	return (size);
 }
 
-int	read_file(t_buffer *buf, const char *path)
+int	xml_read_file(t_buffer *buf, const char *path)
 {
-	int			fd;
+	int	fd;
 
-	buf->buff_len = get_size(path);
+	buf->buff_len = xml_get_size(path);
 	if (buf->buff_len == FALSE)
 		return (FALSE);
 	buf->mem = (char *)malloc(sizeof(buf->mem) * buf->buff_len + 1);
@@ -68,11 +68,11 @@ int	read_file(t_buffer *buf, const char *path)
 		return (xml_error_free(buf->mem, "Could not read file"));
 	buf->mem[buf->buff_len] = '\0';
 	if (close(fd) == -1)
-		return (xml_error_free(buf->mem, "Could not close file at read_file"));
+		return (xml_error_free(buf->mem, "Could not close file"));
 	return (TRUE);
 }
 
-int	get_data(t_xml_node *current_node, char *buf, char lex[256])
+int	xml_get_data(t_xml_node *current_node, char *buf, char lex[256])
 {
 	if (!current_node)
 		return (xml_error_free(buf, "Text outside document"));
@@ -81,7 +81,8 @@ int	get_data(t_xml_node *current_node, char *buf, char lex[256])
 	return (TRUE);
 }
 
-int	node_end(char *buf, char lex[256], int index[2], t_xml_node **current_node)
+int	xml_node_end(char *buf, char lex[256], int index[2], \
+t_xml_node **current_node)
 {
 	index[0] += 2;
 	while (buf[index[0]] != '>')
@@ -113,7 +114,7 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 	index[0] = 0;
 	index[1] = 1;
 	lex[0] = 0;
-	if (!read_file(&buffer, path))
+	if (!xml_read_file(&buffer, path))
 		return (FALSE);
 	doc->head = xml_node_new(NULL);
 	if (doc->head == NULL)
@@ -131,13 +132,13 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 			lex[index[1]] = '\0';
 			if (index[1] > 0)
 			{
-				if (!get_data(current_node, buf, lex))
+				if (!xml_get_data(current_node, buf, lex))
 					return (FALSE);
 				index[1] = 0;
 			}
 			if (buf[index[0] + 1] == '/')
 			{
-				if (!node_end(buf, lex, index, &current_node))
+				if (!xml_node_end(buf, lex, index, &current_node))
 					return (FALSE);
 				continue ;
 			}
