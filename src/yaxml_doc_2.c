@@ -23,26 +23,6 @@ int	xml_error_free(char *buf, char *err_str)
 	return (FALSE);
 }
 
-static int	check_end(const char *str, const char *target)
-{
-	int	str_len;
-	int	target_len;
-	int	index[0];
-
-	index[0] = 0;
-	str_len = ft_strlen(str);
-	target_len = ft_strlen(target);
-	printf("\tCHECK END : %d\n\n",target_len);
-	if (str_len < target_len)
-		return (FALSE);
-	while (index[0] < target_len)
-	{
-		if (str[str_len - target_len + index[0]] != target[index[0]])
-			return (FALSE);
-	}
-	return (TRUE);
-}
-
 size_t	get_size(const char *path)
 {
 	int		fd;
@@ -51,6 +31,13 @@ size_t	get_size(const char *path)
 	char	buf[4096];
 
 	size = 0;
+	fd = open(path, O_DIRECTORY);
+	if (fd != -1)
+	{
+		close(fd);
+		ft_putendl_fd("ERROR: input is directory", 2);
+		return (FALSE);
+	}
 	fd = open(path, O_RDONLY);
 	if (fd == -1)
 	{
@@ -71,27 +58,24 @@ size_t	get_size(const char *path)
 	return (size);
 }
 
-int	read_file(char **buf, const char *path)
+int	read_file(t_buffer *buf, const char *path)
 {
 	int			fd;
-	size_t		size;
-	char		*temp;
 
-	size = get_size(path);
-	if (size == FALSE)
+	buf->buff_len = get_size(path);
+	if (buf->buff_len == FALSE)
 		return (FALSE);
-	temp = (char *)malloc(sizeof(temp) * size + 1);
-	if (!temp)
-		return (xml_error_free(temp, "Buffer malloc failed"));
+	buf->mem = (char *)malloc(sizeof(buf->mem) * buf->buff_len + 1);
+	if (!buf->mem)
+		return (xml_error_free(buf->mem, "Buffer malloc failed"));
 	fd = open(path, O_RDONLY);
 	if (fd == -1)
-		return (xml_error_free(temp, "Could not load file"));
-	if (read(fd, temp, size) == -1)
-		return (xml_error_free(temp, "Could not read file"));
-	temp[size] = '\0';
+		return (xml_error_free(buf->mem, "Could not load file"));
+	if (read(fd, buf->mem, buf->buff_len) == -1)
+		return (xml_error_free(buf->mem, "Could not read file"));
+	buf->mem[buf->buff_len] = '\0';
 	if (close(fd) == -1)
-		return (xml_error_free(temp, "Could not close file at read_file"));
-	*buf = temp;
+		return (xml_error_free(buf->mem, "Could not close file at read_file"));
 	return (TRUE);
 }
 
@@ -104,7 +88,7 @@ int	get_data(t_xml_node *current_node, char *buf, char lex[256])
 	return (TRUE);
 }
 
-int node_end(char *buf, char lex[256], int index[2], t_xml_node **current_node)
+int	node_end(char *buf, char lex[256], int index[2], t_xml_node **current_node)
 {
 	index[0] += 2;
 	while (buf[index[0]] != '>')
@@ -124,27 +108,34 @@ int node_end(char *buf, char lex[256], int index[2], t_xml_node **current_node)
 	index[1] = 0;
 	return (TRUE);
 }
+
+int	check_end(const char *str, const char *target);
+
 /*ADD ERROR IF FILE IS DIRECTORY*/
 int	xml_doc_load(t_xml_doc *doc, const char *path)
 {
-	char		*buf = NULL;
+	t_buffer	buffer;
+	char		*buf;
 	char		lex[256];
 	int			index[2];
-	t_xml_node	*current_node;
 	t_xml_node	*desc;
+	t_xml_node	*current_node;
+	int			temp;
 
 	index[0] = 0;
 	index[1] = 1;
 	lex[0] = 0;
-	if (!read_file(&buf, path))
+	if (!read_file(&buffer, path))
 		return (FALSE);
 	doc->head = xml_node_new(NULL);
 	if (doc->head == NULL)
 	{
 		xml_doc_free(doc);
+		free(buffer.mem);
 		return (FALSE);
 	}
 	current_node = doc->head;
+	buf = buffer.mem;
 	while (buf[index[0]] != '\0')
 	{
 		if (buf[index[0]] == '<')
@@ -162,30 +153,19 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 					return (FALSE);
 				continue ;
 			}
-			// Special nodes - COMMENTS NEED MORE WORK
 			if (buf[index[0] + 1] == '!')
 			{
-				// while loop is problematic. 
-				// TODO COMMMENTS ARE BROKEN
-				// Doesn't recognize comments if there's no space after <!--
-				while (buf[index[0]] != ' ' && buf[index[0]] != '>')
-					lex[index[1]++] = buf[index[0]++];
-				lex[index[1]] = '\0';
-				//comments - This while loop seems kinda stupid, make it better
-				printf("I CAN HAZ COMMENT?\n%s\n", lex);
-				if (!ft_strcmp(lex, "<!--"))
+				temp = index[0];
+				if (xml_comment(buf, &temp))
 				{
-					while (!check_end(lex, "-->"))
-					{
-						lex[index[1]++] = buf[index[0]++];
-						lex[index[1]] = '\0';
-					}
+					index[0] = ++temp;
 					continue ;
 				}
 			}
 			//declaration tags
 			if (buf[index[0] + 1] == '?')
 			{
+				//xml_declaration(buf, index[0], doc);
 				while (buf[index[0]] != ' ' && buf[index[0]] != '>')
 					lex[index[1]++] = buf[index[0]++];
 				lex[index[1]] = '\0';
@@ -233,8 +213,7 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 				index[1]--;
 		}
 	}
-	//xml_error_free(buf, "Tis fucked");
-	//if (buf != NULL)
-	//	free(buf);
+	if (buf != NULL)
+		free(buf);
 	return (TRUE);
 }
