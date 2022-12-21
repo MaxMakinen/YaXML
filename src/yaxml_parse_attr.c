@@ -21,7 +21,8 @@ int	tag_name(int index[2], char *lex, t_xml_node *current_node)
 	return (TRUE);
 }
 
-int	attribute_key(const char *buf, char *lex, int index[2], t_xml_node *current_node)
+int	attribute_key(const char *buf, char *lex, int index[2], \
+t_xml_node *current_node)
 {
 	t_xml_attr	current_attr;
 
