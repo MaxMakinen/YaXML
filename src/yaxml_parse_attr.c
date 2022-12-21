@@ -58,7 +58,7 @@ t_tag_type	inline_mode(int *index, char *lex, t_xml_node *current_node)
 	return (TAG_INLINE);
 }
 
-t_tag_type	parse_attr(const char *buf, int index[2], char *lex, \
+t_tag_type	xml_parse_attr(const char *buf, int index[2], char *lex, \
 t_xml_node *current_node)
 {
 	while (buf[index[0]] != '>')

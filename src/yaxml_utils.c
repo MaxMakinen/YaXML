@@ -18,7 +18,7 @@ int	xml_return_error(const char *str)
 	return (FALSE);
 }
 
-void	*resize_memory(void *ptr, size_t size, size_t old_size)
+void	*xml_resize_memory(void *ptr, size_t size, size_t old_size)
 {
 	void	*new;
 
@@ -77,7 +77,7 @@ int	xml_declaration(const char *buf, int *index, t_xml_doc *doc)
 	{
 		index[1] = 0;
 		desc = xml_node_new(NULL);
-		parse_attr(buf, index, lex, desc);
+		xml_parse_attr(buf, index, lex, desc);
 		doc->version = ft_strdup(\
 		xml_node_attr_value(desc, "version"));
 		doc->encoding = ft_strdup(\
@@ -93,7 +93,7 @@ int	xml_declaration(const char *buf, int *index, t_xml_doc *doc)
 int	xml_start_tag(const char *buf, int index[2], char *lex, t_xml_node **node)
 {
 	index[0]++;
-	if (parse_attr(buf, index, lex, *node) == TAG_INLINE)
+	if (xml_parse_attr(buf, index, lex, *node) == TAG_INLINE)
 	{
 		index[1] = 0;
 		*node = (*node)->parent;

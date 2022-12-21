@@ -38,7 +38,7 @@ int	xml_attrlist_add(t_xml_attrlist *list, t_xml_attr *attr)
 	if (list->size >= list->memory_size)
 	{
 		list->memory_size *= 2;
-		list->list = (t_xml_attr *)resize_memory(list->list, \
+		list->list = (t_xml_attr *)xml_resize_memory(list->list, \
 		sizeof(t_xml_attr) * list->memory_size, \
 		sizeof(t_xml_attr) * list->size);
 		if (list->list == NULL)
@@ -53,7 +53,7 @@ int	xml_nodelist_add(t_xml_nodelist *list, t_xml_node *node)
 	if (list->size >= list->memory_size)
 	{
 		list->memory_size *= 2;
-		list->list = (t_xml_node **)resize_memory(list->list, \
+		list->list = (t_xml_node **)xml_resize_memory(list->list, \
 		sizeof(t_xml_node *) * list->memory_size, \
 		sizeof(t_xml_node *) * list->size);
 		if (list->list == NULL)

@@ -94,7 +94,7 @@ void			xml_node_free(t_xml_node *node);
 void			xml_doc_free(t_xml_doc *doc);
 
 /* Re-allocate memory for lists*/
-void			*resize_memory(void *ptr, size_t size, size_t old_size);
+void			*xml_resize_memory(void *ptr, size_t size, size_t old_size);
 
 /* Node functions */
 t_xml_node		*xml_node_new(t_xml_node *parent);
@@ -110,6 +110,6 @@ int				xml_attrlist_add(t_xml_attrlist *list, t_xml_attr *attr);
 int				xml_nodelist_init(t_xml_nodelist *list);
 int				xml_nodelist_add(t_xml_nodelist *list, t_xml_node *node);
 t_xml_node		*xml_nodelist_at(t_xml_nodelist *list, int index);
-t_tag_type		parse_attr(const char *buf, int index[2], char *lex, \
+t_tag_type		xml_parse_attr(const char *buf, int index[2], char *lex, \
 				t_xml_node *current_node);
 #endif
