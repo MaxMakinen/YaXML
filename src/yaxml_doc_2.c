@@ -117,7 +117,7 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 	char		*buf;
 	char		lex[1024];
 	int			index[2];
-	t_xml_node	*desc;
+//	t_xml_node	*desc;
 	t_xml_node	*current_node;
 	int			temp;
 
@@ -161,28 +161,10 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 					continue ;
 				}
 			}
-			//declaration tags
 			if (buf[index[0] + 1] == '?')
 			{
-				//xml_declaration(buf, index[0], doc);
-				while (buf[index[0]] != ' ' && buf[index[0]] != '>')
-					lex[index[1]++] = buf[index[0]++];
-				lex[index[1]] = '\0';
-				// This is XML declaration
-				if (!ft_strcmp(lex, "<?xml"))
-				{
-					index[1] = 0;
-					desc = xml_node_new(NULL);
-					parse_attr(buf, index, lex, desc);
-					doc->version = ft_strdup(\
-					xml_node_attr_value(desc, "version"));
-					doc->encoding = ft_strdup(\
-					xml_node_attr_value(desc, "encoding"));
-					xml_node_free(desc);
-					index[1] = 0;
-					index[0]++;
+				if (xml_declaration(buf, index, doc))
 					continue ;
-				}
 			}
 			//set current node
 			current_node = xml_node_new(current_node);

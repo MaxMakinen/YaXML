@@ -56,15 +56,15 @@ int	xml_declaration(const char *buf, int *index, t_xml_doc *doc)
 {
 	t_xml_node	*desc;
 	char		lex[1024];
-	int			lexi;
 
-	lexi = 0;
-	while (buf[*index] != '\0' && buf[*index] != ' ' && buf[*index] != '>')
-		lex[lexi++] = buf[*index++];
-	lex[lexi] = '\0';
-	if (!ft_strncmp(lex, "<?xml", 5))
+	while (buf[index[0]] != '\0' && buf[index[0]] != ' ' && \
+	buf[index[0]] != '>')
+		lex[index[1]++] = buf[index[0]++];
+	lex[index[1]] = '\0';
+	// This is XML declaration
+	if (!ft_strcmp(lex, "<?xml"))
 	{
-		lexi = 0;
+		index[1] = 0;
 		desc = xml_node_new(NULL);
 		parse_attr(buf, index, lex, desc);
 		doc->version = ft_strdup(\
@@ -72,9 +72,9 @@ int	xml_declaration(const char *buf, int *index, t_xml_doc *doc)
 		doc->encoding = ft_strdup(\
 		xml_node_attr_value(desc, "encoding"));
 		xml_node_free(desc);
-		lexi = 0;
-//		*index++;
-//		continue ;
+		index[1] = 0;
+		index[0]++;
+		return (TRUE);
 	}
 	return (FALSE);
 }
