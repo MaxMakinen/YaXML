@@ -84,8 +84,13 @@ int				xml_declaration(const char *buf, int *index, t_xml_doc *doc);
 int				xml_start_tag(const char *buf, int index[2], char *lex, \
 				t_xml_node **node);
 
+/* File handling */
+size_t			xml_get_size(const char *path);
+int				xml_read_file(t_buffer *buf, const char *path);
+
 /* Utility function */
 int				xml_return_error(const char *str);
+int				xml_error_free(char *buf, char *err_str);
 
 /* Free allocated memory */
 void			xml_attr_free(t_xml_attr *attr);

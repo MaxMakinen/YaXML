@@ -12,12 +12,6 @@
 
 #include "yaxml.h"
 
-int	xml_return_error(const char *str)
-{
-	ft_putendl_fd(str, 2);
-	return (FALSE);
-}
-
 void	*xml_resize_memory(void *ptr, size_t size, size_t old_size)
 {
 	void	*new;
