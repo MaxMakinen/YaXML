@@ -17,7 +17,7 @@ OBJ_DIR =	obj
 SRC_DIR =	src
 INCLUDE =	-I ./include/ -I ./libft/
 LIBFT =		./libft/libft.a
-OBJS =		yaxml_doc_2.o\
+OBJS =		yaxml_doc.o\
 			yaxml_free.o\
 			yaxml_list.o\
 			yaxml_node.o\
