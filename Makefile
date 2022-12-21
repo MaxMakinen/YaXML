@@ -23,7 +23,9 @@ OBJS =		yaxml_doc.o\
 			yaxml_node.o\
 			yaxml_attr.o\
 			yaxml_utils.o\
-			yaxml_parse_attr.o
+			yaxml_parse_attr.o\
+			yaxml_file_handling.o\
+			yaxml_error.o
 OBJECTS =	$(addprefix $(OBJ_DIR)/, $(OBJS))
 
 all: $(NAME)

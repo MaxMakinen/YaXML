@@ -43,6 +43,19 @@ t_xml_node **current_node)
 	return (TRUE);
 }
 
+int	xml_init_doc(t_xml_doc *doc, t_buffer *buffer, t_xml_node **current_node)
+{
+	doc->head = xml_node_new(NULL);
+	if (doc->head == NULL)
+	{
+		xml_doc_free(doc);
+		free(buffer->mem);
+		return (FALSE);
+	}
+	*current_node = doc->head;
+	return (TRUE);
+}
+
 int	xml_doc_load(t_xml_doc *doc, const char *path)
 {
 	t_buffer	buffer;
@@ -56,14 +69,8 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 	lex[0] = 0;
 	if (!xml_read_file(&buffer, path))
 		return (FALSE);
-	doc->head = xml_node_new(NULL);
-	if (doc->head == NULL)
-	{
-		xml_doc_free(doc);
-		free(buffer.mem);
+	if (!xml_init_doc(doc, &buffer, &current_node))
 		return (FALSE);
-	}
-	current_node = doc->head;
 	buf = buffer.mem;
 	while (buf[index[0]] != '\0')
 	{
