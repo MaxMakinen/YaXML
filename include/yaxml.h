@@ -82,6 +82,9 @@ int				xml_doc_load(t_xml_doc *doc, const char *path);
 int				xml_comment(const char *buf, int *index);
 int				xml_declaration(const char *buf, int *index, t_xml_doc *doc);
 
+/* Utility function */
+int				xml_return_error(const char *str);
+
 /* Free allocated memory */
 void			xml_attr_free(t_xml_attr *attr);
 void			xml_nodelist_free(t_xml_nodelist *list);

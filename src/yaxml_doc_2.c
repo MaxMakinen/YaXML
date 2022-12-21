@@ -35,15 +35,11 @@ size_t	get_size(const char *path)
 	if (fd != -1)
 	{
 		close(fd);
-		ft_putendl_fd("ERROR: input is directory", 2);
-		return (FALSE);
+		return (xml_return_error("ERROR: Input is directory"));
 	}
 	fd = open(path, O_RDONLY);
 	if (fd == -1)
-	{
-		ft_putendl_fd("ERROR: Could not load file", 2);
-		return (FALSE);
-	}
+		return (xml_return_error("ERROR: Could not load file"));
 	temp = read(fd, buf, 4096);
 	while (temp > 0)
 	{
@@ -51,10 +47,7 @@ size_t	get_size(const char *path)
 		temp = read(fd, buf, 4096);
 	}
 	if (close(fd) == -1)
-	{
-		ft_putendl_fd("ERROR: Couild not close file at get_size", 2);
-		return (FALSE);
-	}
+		return (xml_return_error("ERROR: Could not close file at get_size"));
 	return (size);
 }
 
@@ -117,7 +110,6 @@ int	xml_doc_load(t_xml_doc *doc, const char *path)
 	char		*buf;
 	char		lex[1024];
 	int			index[2];
-//	t_xml_node	*desc;
 	t_xml_node	*current_node;
 	int			temp;
 
